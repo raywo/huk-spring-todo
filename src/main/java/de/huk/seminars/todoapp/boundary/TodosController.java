@@ -1,5 +1,7 @@
 package de.huk.seminars.todoapp.boundary;
 
+import de.huk.seminars.todoapp.control.CouldNotCreateItemException;
+import de.huk.seminars.todoapp.control.NotFoundException;
 import de.huk.seminars.todoapp.control.Todo;
 import de.huk.seminars.todoapp.control.TodosService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,7 @@ public class TodosController {
 
 
   @PostMapping
-  public ResponseEntity<TodoDto> createTodo(@RequestBody TodoDto newTodo) {
+  public ResponseEntity<TodoDto> createTodo(@RequestBody TodoDto newTodo) throws CouldNotCreateItemException {
     if (newTodo.getId() != null) {
       return ResponseEntity.badRequest().build();
     }
@@ -61,7 +63,7 @@ public class TodosController {
 
   @PutMapping("/{id}")
   public ResponseEntity<TodoDto> updateTodo(@PathVariable Long id,
-                                            @RequestBody TodoDto updatedTodo) {
+                                            @RequestBody TodoDto updatedTodo) throws NotFoundException {
     if (updatedTodo.getId() == null) {
       return ResponseEntity.badRequest().build();
     }

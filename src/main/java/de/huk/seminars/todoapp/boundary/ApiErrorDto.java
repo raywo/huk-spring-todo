@@ -1,14 +1,17 @@
 package de.huk.seminars.todoapp.boundary;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class AssigneeDto {
+@AllArgsConstructor
+@Builder
+public class ApiErrorDto {
 
-  private Long id;
-  private String name;
+  private String errorCode;
+  private String errorMessage;
+
 }

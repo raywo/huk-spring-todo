@@ -1,6 +1,5 @@
 package de.huk.seminars.todoapp.control;
 
-import de.huk.seminars.todoapp.boundary.AssigneeDto;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -9,27 +8,27 @@ import java.util.*;
 @Service
 public class AssigneesService {
 
-  private final Map<Long, AssigneeDto> assignees = new HashMap<>();
+  private final Map<Long, Assignee> assignees = new HashMap<>();
 
 
   @PostConstruct
   public void initData() {
-    assignees.put(1L, new AssigneeDto(1L, "Ray"));
-    assignees.put(2L, new AssigneeDto(2L, "Andi"));
+    assignees.put(1L, new Assignee(1L, "Ray"));
+    assignees.put(2L, new Assignee(2L, "Andi"));
   }
 
 
-  public Collection<AssigneeDto> allAssignees() {
+  public Collection<Assignee> allAssignees() {
     return assignees.values();
   }
 
 
-  public Optional<AssigneeDto> singleTodo(Long id) {
+  public Optional<Assignee> singleTodo(Long id) {
     return Optional.of(assignees.get(id));
   }
 
 
-  public AssigneeDto createAssignee(AssigneeDto newAssignee) {
+  public Assignee createAssignee(Assignee newAssignee) {
     // TODO Was passiert, wenn das Todo schon existiert?
     Long newId = getNextId();
 
@@ -40,7 +39,7 @@ public class AssigneesService {
   }
 
 
-  public AssigneeDto updateAssignee(AssigneeDto updatedAssignee) {
+  public Assignee updateAssignee(Assignee updatedAssignee) {
     // TODO Was passiert, wenn das Todo noch nicht existiert?
     assignees.put(updatedAssignee.getId(), updatedAssignee);
 
@@ -49,7 +48,7 @@ public class AssigneesService {
 
 
   public boolean delete(Long id) {
-    AssigneeDto removedAssignee = assignees.remove(id);
+    Assignee removedAssignee = assignees.remove(id);
 
     return removedAssignee != null;
   }

@@ -1,5 +1,6 @@
 package de.huk.seminars.todoapp.control;
 
+import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -27,9 +28,13 @@ public class TodosService {
   }
 
 
-  public Todo createTodo(Todo newTodo) {
-    // TODO Was passiert, wenn das Todo schon existiert?
+  @NonNull
+  public Todo createTodo(Todo newTodo) throws CouldNotCreateItemException {
     Long newId = getNextId();
+
+    if (todos.containsKey(newId)) {
+      throw new CouldNotCreateItemException("Das Todo konnte nicht erzeugt werden.");
+    }
 
     newTodo.setId(newId);
     todos.put(newId, newTodo);
@@ -38,8 +43,12 @@ public class TodosService {
   }
 
 
-  public Todo updateTodo(Todo updatedTodo) {
-    // TODO Was passiert, wenn das Todo noch nicht existiert?
+  @NonNull
+  public Todo updateTodo(Todo updatedTodo) throws NotFoundException {
+    if (!todos.containsKey(updatedTodo.getId())) {
+      throw new NotFoundException("Das Todo konnte nicht gefunden werden.");
+    }
+
     todos.put(updatedTodo.getId(), updatedTodo);
 
     return updatedTodo;

@@ -6,23 +6,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/assignees")
 public class AssigneesController {
 
-  final
-  AssigneesService assigneesService;
+  private final AssigneesService assigneesService;
+  private final AssigneesMapper mapper;
 
 
-  public AssigneesController(AssigneesService assigneesService) {
+  public AssigneesController(AssigneesService assigneesService, AssigneesMapper mapper) {
     this.assigneesService = assigneesService;
+    this.mapper = mapper;
   }
 
 
   @GetMapping
   public Collection<AssigneeDto> allAssignees() {
-    return assigneesService.allAssignees();
+    return assigneesService.allAssignees()
+        .stream()
+        .map(mapper::map)
+        .collect(Collectors.toList());
   }
 
 
@@ -30,6 +35,7 @@ public class AssigneesController {
   public ResponseEntity<AssigneeDto> singleAssignee(@PathVariable Long id) {
     return assigneesService
         .singleTodo(id)
+        .map(mapper::map)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
@@ -41,7 +47,9 @@ public class AssigneesController {
       return ResponseEntity.badRequest().build();
     }
 
-    AssigneeDto assignee = assigneesService.createAssignee(newAssignee);
+    AssigneeDto assignee = mapper.map(
+        assigneesService.createAssignee(mapper.map(newAssignee))
+    );
 
     return ResponseEntity.status(HttpStatus.CREATED).body(assignee);
   }
@@ -58,7 +66,9 @@ public class AssigneesController {
       return ResponseEntity.badRequest().build();
     }
 
-    AssigneeDto assigneeDto = assigneesService.updateAssignee(updatedAssignee);
+    AssigneeDto assigneeDto = mapper.map(
+        assigneesService.updateAssignee(mapper.map(updatedAssignee))
+    );
 
     return ResponseEntity.ok(assigneeDto);
   }
