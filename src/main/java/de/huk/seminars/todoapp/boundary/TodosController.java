@@ -1,42 +1,38 @@
 package de.huk.seminars.todoapp.boundary;
 
+import de.huk.seminars.todoapp.control.TodosService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/todos")
 public class TodosController {
 
-  private Map<Long, TodoDto> todos = new HashMap<>();
+  private final TodosService todosService;
 
-  @PostConstruct
-  public void initData() {
-    todos.put(1L, new TodoDto(1L, "erstes Todo", "2022-04-01"));
-    todos.put(2L, new TodoDto(2L, "zweites Todo", "2022-04-01"));
+
+  @Autowired
+  public TodosController(TodosService todosService) {
+    this.todosService = todosService;
   }
+
 
   @GetMapping
   public Collection<TodoDto> allTodos() {
-    return todos.values();
+    return todosService.allTodos();
   }
 
 
   @GetMapping("/{id}")
   public ResponseEntity<TodoDto> singleTodo(@PathVariable Long id) {
-    TodoDto todoDto = todos.get(id);
-
-    if (todoDto == null) {
-      return ResponseEntity.notFound().build();
-    } else {
-      return ResponseEntity.ok(todoDto);
-    }
+    return todosService
+        .singleTodo(id)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
 
@@ -46,16 +42,9 @@ public class TodosController {
       return ResponseEntity.badRequest().build();
     }
 
-    Long newId = todos
-        .keySet()
-        .stream()
-        .max(Comparator.naturalOrder())
-        .orElse(0L) + 1L;
+    TodoDto createdTodo = todosService.createTodo(newTodo);
 
-    newTodo.setId(newId);
-    todos.put(newId, newTodo);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(newTodo);
+    return ResponseEntity.status(HttpStatus.CREATED).body(createdTodo);
   }
 
 
@@ -70,15 +59,18 @@ public class TodosController {
       return ResponseEntity.badRequest().build();
     }
 
-    todos.put(id, updatedTodo);
-
-    return ResponseEntity.ok(updatedTodo);
+    return ResponseEntity.ok(todosService.updateTodo(updatedTodo));
   }
 
 
   @DeleteMapping("/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteTodo(@PathVariable Long id) {
-    todos.remove(id);
+  public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
+    boolean deleted = todosService.delete(id);
+
+    if (deleted) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.notFound().build();
+    }
   }
 }
