@@ -1,6 +1,5 @@
 package de.huk.seminars.todoapp.control;
 
-import de.huk.seminars.todoapp.boundary.TodoDto;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -8,27 +7,27 @@ import java.util.*;
 
 @Service
 public class TodosService {
-  private Map<Long, TodoDto> todos = new HashMap<>();
+  private Map<Long, Todo> todos = new HashMap<>();
 
 
   @PostConstruct
   public void initData() {
-    todos.put(1L, new TodoDto(1L, "erstes Todo", "2022-04-01"));
-    todos.put(2L, new TodoDto(2L, "zweites Todo", "2022-04-01"));
+    todos.put(1L, new Todo(1L, "erstes Todo", "2022-04-01"));
+    todos.put(2L, new Todo(2L, "zweites Todo", "2022-04-01"));
   }
 
 
-  public Collection<TodoDto> allTodos() {
+  public Collection<Todo> allTodos() {
     return todos.values();
   }
 
 
-  public Optional<TodoDto> singleTodo(Long id) {
+  public Optional<Todo> singleTodo(Long id) {
     return Optional.of(todos.get(id));
   }
 
 
-  public TodoDto createTodo(TodoDto newTodo) {
+  public Todo createTodo(Todo newTodo) {
     // TODO Was passiert, wenn das Todo schon existiert?
     Long newId = getNextId();
 
@@ -39,7 +38,7 @@ public class TodosService {
   }
 
 
-  public TodoDto updateTodo(TodoDto updatedTodo) {
+  public Todo updateTodo(Todo updatedTodo) {
     // TODO Was passiert, wenn das Todo noch nicht existiert?
     todos.put(updatedTodo.getId(), updatedTodo);
 
@@ -48,7 +47,7 @@ public class TodosService {
 
 
   public boolean delete(Long id) {
-    TodoDto removedTodo = todos.remove(id);
+    Todo removedTodo = todos.remove(id);
 
     return removedTodo != null;
   }

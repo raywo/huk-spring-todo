@@ -1,4 +1,4 @@
-package de.huk.seminars.todoapp.boundary;
+package de.huk.seminars.todoapp.control;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TodoDto {
+public class Todo {
 
   private Long id;
   private String title;
@@ -19,9 +19,9 @@ public class TodoDto {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof TodoDto)) return false;
-    TodoDto todoDto = (TodoDto) o;
-    return Objects.equals(getId(), todoDto.getId());
+    if (!(o instanceof Todo)) return false;
+    Todo todo = (Todo) o;
+    return Objects.equals(getId(), todo.getId());
   }
 
 

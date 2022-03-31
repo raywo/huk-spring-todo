@@ -1,44 +1,37 @@
 package de.huk.seminars.todoapp.boundary;
 
+import de.huk.seminars.todoapp.control.AssigneesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/assignees")
 public class AssigneesController {
 
-  private Map<Long, AssigneeDto> assignees = new HashMap<>();
+  final
+  AssigneesService assigneesService;
 
 
-  @PostConstruct
-  public void initData() {
-    assignees.put(1L, new AssigneeDto(1L, "Ray"));
-    assignees.put(2L, new AssigneeDto(2L, "Andi"));
+  public AssigneesController(AssigneesService assigneesService) {
+    this.assigneesService = assigneesService;
   }
 
 
   @GetMapping
   public Collection<AssigneeDto> allAssignees() {
-    return assignees.values();
+    return assigneesService.allAssignees();
   }
 
 
   @GetMapping("/{id}")
   public ResponseEntity<AssigneeDto> singleAssignee(@PathVariable Long id) {
-    AssigneeDto assignee = assignees.get(id);
-
-    if (assignee == null) {
-      return ResponseEntity.notFound().build();
-    } else {
-      return ResponseEntity.ok(assignee);
-    }
+    return assigneesService
+        .singleTodo(id)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
 
@@ -48,16 +41,9 @@ public class AssigneesController {
       return ResponseEntity.badRequest().build();
     }
 
-    Long newId = assignees
-        .keySet()
-        .stream()
-        .max(Comparator.naturalOrder())
-        .orElse(0L) + 1L;
+    AssigneeDto assignee = assigneesService.createAssignee(newAssignee);
 
-    newAssignee.setId(newId);
-    assignees.put(newId, newAssignee);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(newAssignee);
+    return ResponseEntity.status(HttpStatus.CREATED).body(assignee);
   }
 
 
@@ -72,15 +58,18 @@ public class AssigneesController {
       return ResponseEntity.badRequest().build();
     }
 
-    assignees.put(id, updatedAssignee);
+    AssigneeDto assigneeDto = assigneesService.updateAssignee(updatedAssignee);
 
-    return ResponseEntity.ok(updatedAssignee);
+    return ResponseEntity.ok(assigneeDto);
   }
 
 
   @DeleteMapping("/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteAssignee(@PathVariable Long id) {
-    assignees.remove(id);
+  public ResponseEntity<Void> deleteAssignee(@PathVariable Long id) {
+    if (assigneesService.delete(id)) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.notFound().build();
+    }
   }
 }
