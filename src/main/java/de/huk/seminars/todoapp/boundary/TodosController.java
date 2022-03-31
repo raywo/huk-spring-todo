@@ -7,6 +7,7 @@ import de.huk.seminars.todoapp.control.TodosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -48,26 +49,19 @@ public class TodosController {
 
 
   @PostMapping
-  public ResponseEntity<TodoDto> createTodo(@RequestBody TodoDto newTodo) throws CouldNotCreateItemException {
-    if (newTodo.getId() != null) {
-      return ResponseEntity.badRequest().build();
-    }
-
-    TodoDto createdTodo = todoMapper.map(
+  @ResponseStatus(HttpStatus.CREATED)
+  public TodoDto createTodo(@RequestBody @Validated(OnCreate.class) TodoDto newTodo)
+      throws CouldNotCreateItemException {
+    return todoMapper.map(
         todosService.createTodo(todoMapper.map(newTodo))
     );
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(createdTodo);
   }
 
 
   @PutMapping("/{id}")
   public ResponseEntity<TodoDto> updateTodo(@PathVariable Long id,
-                                            @RequestBody TodoDto updatedTodo) throws NotFoundException {
-    if (updatedTodo.getId() == null) {
-      return ResponseEntity.badRequest().build();
-    }
-
+                                            @RequestBody @Validated(OnUpdate.class) TodoDto updatedTodo)
+      throws NotFoundException {
     if (!id.equals(updatedTodo.getId())) {
       return ResponseEntity.badRequest().build();
     }
@@ -79,13 +73,8 @@ public class TodosController {
 
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-    boolean deleted = todosService.delete(id);
-
-    if (deleted) {
-      return ResponseEntity.noContent().build();
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteTodo(@PathVariable Long id) throws NotFoundException {
+    todosService.delete(id);
   }
 }

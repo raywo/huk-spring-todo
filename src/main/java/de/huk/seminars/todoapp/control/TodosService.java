@@ -55,10 +55,10 @@ public class TodosService {
   }
 
 
-  public boolean delete(Long id) {
-    Todo removedTodo = todos.remove(id);
-
-    return removedTodo != null;
+  public void delete(Long id) throws NotFoundException {
+    if (todos.remove(id) == null) {
+      throw new NotFoundException("Todo konnte nicht gelöscht werden.");
+    }
   }
 
 
