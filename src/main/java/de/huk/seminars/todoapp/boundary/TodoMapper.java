@@ -1,41 +1,12 @@
 package de.huk.seminars.todoapp.boundary;
 
 import de.huk.seminars.todoapp.control.Todo;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-public class TodoMapper {
+@Mapper(componentModel = "spring")
+public interface TodoMapper {
 
-  TodoDto map(Todo todo) {
-    if (todo == null) {
-      return null;
-    }
+  TodoDto map(Todo todo);
 
-    TodoDto result = new TodoDto();
-
-    result.setId(todo.getId());
-    result.setTitle(todo.getTitle());
-    result.setDueDate(todo.getDueDate());
-    result.setPassword(todo.getPassword());
-    result.setRePassword(todo.getRePassword());
-
-    return result;
-  }
-
-
-  Todo map(TodoDto todoDto) {
-    if (todoDto == null) {
-      return null;
-    }
-
-    Todo result = new Todo();
-
-    result.setId(todoDto.getId());
-    result.setTitle(todoDto.getTitle());
-    result.setDueDate(todoDto.getDueDate());
-    result.setPassword(todoDto.getPassword());
-    result.setRePassword(todoDto.getRePassword());
-
-    return result;
-  }
+  Todo map(TodoDto todoDto);
 }

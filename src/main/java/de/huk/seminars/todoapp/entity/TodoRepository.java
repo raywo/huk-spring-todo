@@ -10,4 +10,6 @@ public interface TodoRepository extends CrudRepository<TodoEntity, Long> {
 
   @Override
   Collection<TodoEntity> findAll();
+
+  Collection<TodoEntity> findByTitleStartsWithAndDueDate(String titleFragment, String dueDate);
 }

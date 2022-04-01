@@ -72,4 +72,9 @@ public class TodosService {
 
     repository.deleteById(id);
   }
+
+
+  public long count() {
+    return repository.count();
+  }
 }

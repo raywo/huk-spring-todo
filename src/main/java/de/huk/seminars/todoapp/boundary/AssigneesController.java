@@ -1,6 +1,7 @@
 package de.huk.seminars.todoapp.boundary;
 
 import de.huk.seminars.todoapp.control.AssigneesService;
+import de.huk.seminars.todoapp.control.NotFoundException;
 import de.huk.seminars.todoapp.shared.validation.OnCreate;
 import de.huk.seminars.todoapp.shared.validation.OnUpdate;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,7 @@ public class AssigneesController {
 
   @PutMapping("/{id}")
   public ResponseEntity<AssigneeDto> updateAssignee(@PathVariable Long id,
-                                                    @RequestBody @Validated(OnUpdate.class) AssigneeDto updatedAssignee) {
+                                                    @RequestBody @Validated(OnUpdate.class) AssigneeDto updatedAssignee) throws NotFoundException {
     if (!id.equals(updatedAssignee.getId())) {
       return ResponseEntity.badRequest().build();
     }
@@ -78,11 +79,8 @@ public class AssigneesController {
 
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteAssignee(@PathVariable Long id) {
-    if (assigneesService.delete(id)) {
-      return ResponseEntity.noContent().build();
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteAssignee(@PathVariable Long id) throws NotFoundException {
+    assigneesService.delete(id);
   }
 }

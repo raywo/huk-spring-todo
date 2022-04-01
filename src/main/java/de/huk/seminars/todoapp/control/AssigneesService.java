@@ -1,64 +1,65 @@
 package de.huk.seminars.todoapp.control;
 
+import de.huk.seminars.todoapp.entity.AssigneeRepository;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AssigneesService {
 
-  private final Map<Long, Assignee> assignees = new HashMap<>();
+  private final AssigneeRepository repository;
+  private final AssigneeEntityMapper mapper;
 
 
-  @PostConstruct
-  public void initData() {
-    assignees.put(1L, new Assignee(1L, "Ray"));
-    assignees.put(2L, new Assignee(2L, "Andi"));
+  public AssigneesService(AssigneeRepository repository, AssigneeEntityMapper mapper) {
+    this.repository = repository;
+    this.mapper = mapper;
   }
 
 
+//  @PostConstruct
+//  public void initData() {
+//    assignees.put(1L, new Assignee(1L, "Ray"));
+//    assignees.put(2L, new Assignee(2L, "Andi"));
+//  }
+
+
   public Collection<Assignee> allAssignees() {
-    return assignees.values();
+    return repository.findAll()
+        .stream()
+        .map(mapper::map)
+        .collect(Collectors.toList());
   }
 
 
   public Optional<Assignee> singleTodo(Long id) {
-    return Optional.of(assignees.get(id));
+    return repository.findById(id)
+        .map(mapper::map);
   }
 
 
   public Assignee createAssignee(Assignee newAssignee) {
-    // TODO Was passiert, wenn das Todo schon existiert?
-    Long newId = getNextId();
-
-    newAssignee.setId(newId);
-    assignees.put(newId, newAssignee);
-
-    return newAssignee;
+    return mapper.map(repository.save(mapper.map(newAssignee)));
   }
 
 
-  public Assignee updateAssignee(Assignee updatedAssignee) {
-    // TODO Was passiert, wenn das Todo noch nicht existiert?
-    assignees.put(updatedAssignee.getId(), updatedAssignee);
+  public Assignee updateAssignee(Assignee updatedAssignee) throws NotFoundException {
+    if (!repository.existsById(updatedAssignee.getId())) {
+      throw new NotFoundException("Das Todo konnte nicht gefunden werden.");
+    }
 
-    return updatedAssignee;
+    return mapper.map(repository.save(mapper.map(updatedAssignee)));
   }
 
 
-  public boolean delete(Long id) {
-    Assignee removedAssignee = assignees.remove(id);
+  public void delete(Long id) throws NotFoundException {
+    if (!repository.existsById(id)) {
+      throw new NotFoundException("Das Todo konnte nicht gefunden werden.");
+    }
 
-    return removedAssignee != null;
-  }
-
-
-  private Long getNextId() {
-    return assignees
-        .keySet()
-        .stream()
-        .max(Comparator.naturalOrder())
-        .orElse(0L) + 1L;
+    repository.deleteById(id);
   }
 }

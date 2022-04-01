@@ -1,0 +1,218 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/todos/{id}:
+    get:
+      tags:
+      - todos-controller
+      operationId: singleTodo
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TodoDto'
+    put:
+      tags:
+      - todos-controller
+      operationId: updateTodo
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TodoDto'
+    delete:
+      tags:
+      - todos-controller
+      operationId: deleteTodo
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+  /api/v1/assignees/{id}:
+    get:
+      tags:
+      - assignees-controller
+      operationId: singleAssignee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AssigneeDto'
+    put:
+      tags:
+      - assignees-controller
+      operationId: updateAssignee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssigneeDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AssigneeDto'
+    delete:
+      tags:
+      - assignees-controller
+      operationId: deleteAssignee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+  /api/v1/todos:
+    get:
+      tags:
+      - todos-controller
+      operationId: allTodos
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoDto'
+    post:
+      tags:
+      - todos-controller
+      operationId: createTodo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoDto'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TodoDto'
+  /api/v1/assignees:
+    get:
+      tags:
+      - assignees-controller
+      operationId: allAssignees
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssigneeDto'
+    post:
+      tags:
+      - assignees-controller
+      operationId: createAssignee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssigneeDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AssigneeDto'
+components:
+  schemas:
+    TodoDto:
+      required:
+      - id
+      - title
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          maxLength: 2147483647
+          minLength: 5
+          type: string
+        dueDate:
+          type: string
+        password:
+          type: string
+        rePassword:
+          type: string
+    AssigneeDto:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          maxLength: 2147483647
+          minLength: 2
+          type: string
