@@ -1,9 +1,13 @@
 package de.huk.seminars.todoapp.control;
 
+import de.huk.seminars.todoapp.shared.validation.OnCreate;
+import de.huk.seminars.todoapp.shared.validation.OnUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.Objects;
 
 @Data
@@ -11,6 +15,8 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Todo {
 
+  @NotNull(groups = OnUpdate.class)
+  @Null(groups = OnCreate.class)
   private Long id;
   private String title;
   private String dueDate;

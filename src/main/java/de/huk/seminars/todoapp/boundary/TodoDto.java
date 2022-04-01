@@ -1,6 +1,8 @@
 package de.huk.seminars.todoapp.boundary;
 
-import de.huk.seminars.todoapp.boundary.validation.FieldValuesMatch;
+import de.huk.seminars.todoapp.shared.validation.FieldValuesMatch;
+import de.huk.seminars.todoapp.shared.validation.OnCreate;
+import de.huk.seminars.todoapp.shared.validation.OnUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

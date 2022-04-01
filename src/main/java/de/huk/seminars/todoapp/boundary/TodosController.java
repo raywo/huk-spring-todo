@@ -4,6 +4,8 @@ import de.huk.seminars.todoapp.control.CouldNotCreateItemException;
 import de.huk.seminars.todoapp.control.NotFoundException;
 import de.huk.seminars.todoapp.control.Todo;
 import de.huk.seminars.todoapp.control.TodosService;
+import de.huk.seminars.todoapp.shared.validation.OnCreate;
+import de.huk.seminars.todoapp.shared.validation.OnUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package de.huk.seminars.todoapp.boundary.validation;
+package de.huk.seminars.todoapp.shared.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

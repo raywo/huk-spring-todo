@@ -1,72 +1,75 @@
 package de.huk.seminars.todoapp.control;
 
+import de.huk.seminars.todoapp.entity.TodoEntity;
+import de.huk.seminars.todoapp.entity.TodoRepository;
+import de.huk.seminars.todoapp.shared.validation.OnCreate;
+import de.huk.seminars.todoapp.shared.validation.OnUpdate;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TodosService {
-  private Map<Long, Todo> todos = new HashMap<>();
+
+  private final TodoRepository repository;
+  private final TodoEntityMapper mapper;
 
 
-  @PostConstruct
-  public void initData() {
-    todos.put(1L, new Todo(1L, "erstes Todo", "2022-04-01", "", ""));
-    todos.put(2L, new Todo(2L, "zweites Todo", "2022-04-01", "", ""));
+  public TodosService(TodoRepository repository, TodoEntityMapper mapper) {
+    this.repository = repository;
+    this.mapper = mapper;
   }
+
+//
+//  @PostConstruct
+//  public void initData() {
+//    todos.put(1L, new Todo(1L, "erstes Todo", "2022-04-01", "", ""));
+//    todos.put(2L, new Todo(2L, "zweites Todo", "2022-04-01", "", ""));
+//  }
 
 
   public Collection<Todo> allTodos() {
-    return todos.values();
+    return repository.findAll()
+        .stream()
+        .map(mapper::map)
+        .collect(Collectors.toList());
   }
 
 
   public Optional<Todo> singleTodo(Long id) {
-    return Optional.of(todos.get(id));
+    return repository.findById(id)
+        .map(mapper::map);
   }
 
 
   @NonNull
-  public Todo createTodo(Todo newTodo) throws CouldNotCreateItemException {
-    Long newId = getNextId();
-
-    if (todos.containsKey(newId)) {
-      throw new CouldNotCreateItemException("Das Todo konnte nicht erzeugt werden.");
-    }
-
-    newTodo.setId(newId);
-    todos.put(newId, newTodo);
-
-    return newTodo;
+  public Todo createTodo(@Validated(OnCreate.class) Todo newTodo) {
+    TodoEntity savedTodo = repository.save(mapper.map(newTodo));
+    return mapper.map(savedTodo);
   }
 
 
   @NonNull
-  public Todo updateTodo(Todo updatedTodo) throws NotFoundException {
-    if (!todos.containsKey(updatedTodo.getId())) {
+  public Todo updateTodo(@Validated(OnUpdate.class) Todo updatedTodo) throws NotFoundException {
+    if (!repository.existsById(updatedTodo.getId())) {
       throw new NotFoundException("Das Todo konnte nicht gefunden werden.");
     }
 
-    todos.put(updatedTodo.getId(), updatedTodo);
+    TodoEntity savedTodo = repository.save(mapper.map(updatedTodo));
 
-    return updatedTodo;
+    return mapper.map(savedTodo);
   }
 
 
   public void delete(Long id) throws NotFoundException {
-    if (todos.remove(id) == null) {
-      throw new NotFoundException("Todo konnte nicht gelöscht werden.");
+    if (!repository.existsById(id)) {
+      throw new NotFoundException("Das Todo konnte nicht gefunden werden.");
     }
-  }
 
-
-  private Long getNextId() {
-    return todos
-        .keySet()
-        .stream()
-        .max(Comparator.naturalOrder())
-        .orElse(0L) + 1L;
+    repository.deleteById(id);
   }
 }

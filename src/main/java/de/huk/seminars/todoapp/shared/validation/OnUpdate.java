@@ -1,4 +1,4 @@
-package de.huk.seminars.todoapp.boundary;
+package de.huk.seminars.todoapp.shared.validation;
 
 import javax.validation.groups.Default;
 

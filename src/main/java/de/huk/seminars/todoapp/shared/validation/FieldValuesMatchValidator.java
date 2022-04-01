@@ -1,4 +1,4 @@
-package de.huk.seminars.todoapp.boundary.validation;
+package de.huk.seminars.todoapp.shared.validation;
 
 import org.springframework.beans.BeanWrapperImpl;
 

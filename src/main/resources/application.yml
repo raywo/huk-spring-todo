@@ -1,3 +1,17 @@
 logging:
   level:
-    root: debug
+    root: info
+
+spring:
+  datasource:
+    url: jdbc:h2:file:./.data/todo-db
+    driverClassName: org.h2.Driver
+    username: user
+    password: null
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
