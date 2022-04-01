@@ -1,5 +1,6 @@
 package de.huk.seminars.todoapp.boundary;
 
+import de.huk.seminars.todoapp.boundary.validation.FieldValuesMatch;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldValuesMatch(field = "password", fieldToMatch = "rePassword")
 public class TodoDto {
 
   @Null(groups = OnCreate.class)
@@ -24,6 +26,9 @@ public class TodoDto {
   private String title;
 
   private String dueDate;
+
+  private String password;
+  private String rePassword;
 
 
   @Override

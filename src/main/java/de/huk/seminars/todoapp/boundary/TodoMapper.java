@@ -16,6 +16,8 @@ public class TodoMapper {
     result.setId(todo.getId());
     result.setTitle(todo.getTitle());
     result.setDueDate(todo.getDueDate());
+    result.setPassword(todo.getPassword());
+    result.setRePassword(todo.getRePassword());
 
     return result;
   }
@@ -31,6 +33,8 @@ public class TodoMapper {
     result.setId(todoDto.getId());
     result.setTitle(todoDto.getTitle());
     result.setDueDate(todoDto.getDueDate());
+    result.setPassword(todoDto.getPassword());
+    result.setRePassword(todoDto.getRePassword());
 
     return result;
   }

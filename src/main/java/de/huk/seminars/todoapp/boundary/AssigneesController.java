@@ -3,6 +3,7 @@ package de.huk.seminars.todoapp.boundary;
 import de.huk.seminars.todoapp.control.AssigneesService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -42,7 +43,7 @@ public class AssigneesController {
 
 
   @PostMapping
-  public ResponseEntity<AssigneeDto> createAssignee(@RequestBody AssigneeDto newAssignee) {
+  public ResponseEntity<AssigneeDto> createAssignee(@RequestBody @Validated(OnCreate.class) AssigneeDto newAssignee) {
     if (newAssignee.getId() != null) {
       return ResponseEntity.badRequest().build();
     }
@@ -57,7 +58,7 @@ public class AssigneesController {
 
   @PutMapping("/{id}")
   public ResponseEntity<AssigneeDto> updateAssignee(@PathVariable Long id,
-                                                    @RequestBody AssigneeDto updatedAssignee) {
+                                                    @RequestBody @Validated(OnUpdate.class) AssigneeDto updatedAssignee) {
     if (!id.equals(updatedAssignee.getId())) {
       return ResponseEntity.badRequest().build();
     }

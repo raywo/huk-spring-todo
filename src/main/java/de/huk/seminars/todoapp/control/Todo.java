@@ -14,6 +14,8 @@ public class Todo {
   private Long id;
   private String title;
   private String dueDate;
+  private String password;
+  private String rePassword;
 
 
   @Override

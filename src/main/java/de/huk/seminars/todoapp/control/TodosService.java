@@ -13,8 +13,8 @@ public class TodosService {
 
   @PostConstruct
   public void initData() {
-    todos.put(1L, new Todo(1L, "erstes Todo", "2022-04-01"));
-    todos.put(2L, new Todo(2L, "zweites Todo", "2022-04-01"));
+    todos.put(1L, new Todo(1L, "erstes Todo", "2022-04-01", "", ""));
+    todos.put(2L, new Todo(2L, "zweites Todo", "2022-04-01", "", ""));
   }
 
 
